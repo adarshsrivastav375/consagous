@@ -6,7 +6,7 @@ import deleteAssociatedFiles from "#utils/removeFile";
 const ProductSchema = new BaseSchema({
   name: {
     type: String,
-    required: true,
+    // required: true,
   },
   description: {
     type: String,

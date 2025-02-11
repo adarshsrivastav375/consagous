@@ -8,7 +8,8 @@
       "#services/*": ["src/services/*.service.js"],
       "#configs/*": ["src/configs/*.config.js"],
       "#models/*": ["src/models/*.model.js"],
-      "#middlewares/*": ["src/middlewares/*.middleware.js"]
+      "#middlewares/*": ["src/middlewares/*.middleware.js"],
+      "#validations/*": ["src/validations/*.validation.js"]
     }
   },
   "include": ["src/**/*"] // Ensure your editor recognizes the source files

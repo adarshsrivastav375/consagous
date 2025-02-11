@@ -31,6 +31,11 @@ export const getOrdersWithMonthlySummary = asyncHandler(
     sendResponse(httpStatus.OK, res, data, "Record fetched successfully");
   }
 );
+export const getSalesData = asyncHandler(async (req, res, next) => {
+  const { category, sortBy } = req.query; // Get filters from query params
+  const data = await OrderService.getTotalSales({ category, sortBy });
+  sendResponse(httpStatus.OK, res, data, "Record fetched successfully");
+});
 
 export const create = asyncHandler(async (req, res, next) => {
   const user = req.user;

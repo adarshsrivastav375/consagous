@@ -202,6 +202,58 @@ class OrderService extends Service {
     }
     return this.Model.findAll(filter, initialStage);
   }
+  static async getTotalSales({ category, sortBy = "salesVolume" }) {
+    const matchCategory = category
+      ? { "productDetails.category": category }
+      : {};
+    const salesData = await Order.aggregate([
+      { $match: { status: "completed" } }, // Only count completed orders
+      { $unwind: "$products" }, // Separate products from the order
+      {
+        $lookup: {
+          from: "products",
+          localField: "products.product",
+          foreignField: "_id",
+          as: "productDetails",
+        },
+      },
+      { $unwind: "$productDetails" }, // Convert lookup array to object
+
+      { $match: matchCategory }, // Filter by category if provided
+      {
+        $group: {
+          _id: "$products.product",
+          productName: { $first: "$productDetails.name" },
+          category: { $first: "$productDetails.category" },
+          totalQuantitySold: { $sum: "$products.quantity" },
+          totalRevenue: {
+            $sum: {
+              $multiply: ["$productDetails.price", "$products.quantity"],
+            },
+          },
+        },
+      },
+      {
+        $sort:
+          sortBy === "salesVolume"
+            ? { totalQuantitySold: -1 }
+            : { totalRevenue: -1 },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          productId: "$_id",
+          productName: 1,
+          category: 1,
+          totalQuantitySold: 1,
+          totalRevenue: 1,
+        },
+      },
+    ]);
+
+    return salesData;
+  }
   static async deleteDoc(id) {
     const deletedDoc = await this.Model.findById(id);
     if (!deletedDoc) {
