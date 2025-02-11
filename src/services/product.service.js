@@ -4,7 +4,6 @@ import httpStatus from "#utils/httpStatus";
 
 class ProductService extends Service {
   static Model = Product;
-
   static async deleteDoc(id) {
     const deletedDoc = await this.Model.findDocById(id);
     await deletedDoc.deleteOne();
