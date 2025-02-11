@@ -26,31 +26,6 @@ export const getUserByRole = asyncHandler(async (req, res, next) => {
     "Record fetched successfully"
   );
 });
-export const getAdmins = asyncHandler(async (req, res, next) => {
-  const filter = req.query;
-  const admins = await UserService.getAdmins(filter);
-  sendResponse(httpStatus.OK, res, admins, "Record fetched successfully");
-});
-export const login = asyncHandler(async (req, res, next) => {
-  const userData = req.body;
-  const loginData = await UserService.loginUser(userData);
-  sendResponse(httpStatus.OK, res, loginData, "Logged in successfully");
-});
-export const AdminLogin = asyncHandler(async (req, res, next) => {
-  const userData = req.body;
-  const loginData = await UserService.loginAdmin(userData);
-  sendResponse(httpStatus.OK, res, loginData, "Logged in successfully");
-});
-export const create = asyncHandler(async (req, res, next) => {
-  const data = req.body;
-  const createdData = await UserService.create(data);
-  sendResponse(
-    httpStatus.CREATED,
-    res,
-    createdData,
-    "Record created successfully"
-  );
-});
 export const update = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const data = req.body;
