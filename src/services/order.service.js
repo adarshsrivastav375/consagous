@@ -3,7 +3,7 @@ import Service from "#services/base";
 import httpStatus from "#utils/httpStatus";
 import mongoose from "mongoose";
 import CartService from "#services/cart";
-import { subDays, startOfDay } from "date-fns";
+import { subDays, startOfDay, startOfMonth, endOfMonth } from "date-fns";
 
 class OrderService extends Service {
   static Model = Order;
@@ -38,6 +38,7 @@ class OrderService extends Service {
           from: "users",
           localField: "user",
           foreignField: "_id",
+          pipeline: [{ $project: { name: 1, email: 1 } }],
           as: "user",
         },
       },
@@ -78,6 +79,7 @@ class OrderService extends Service {
           from: "users",
           localField: "user",
           foreignField: "_id",
+          pipeline: [{ $project: { name: 1, email: 1 } }],
           as: "user",
         },
       },
@@ -106,13 +108,13 @@ class OrderService extends Service {
         },
       },
     ];
-    const orders = this.Model.findAll(filter, initialStage);
+    const orders = await this.Model.findAll(filter, initialStage);
     const now = new Date();
     const startOfCurrentMonth = startOfMonth(now);
     const endOfCurrentMonth = endOfMonth(now);
 
     // monthly summary
-    const monthlySummary = await Order.aggregate([
+    const monthlySummary = await this.Model.aggregate([
       {
         $match: {
           user: userId,
@@ -120,18 +122,28 @@ class OrderService extends Service {
           status: "completed",
         },
       },
-      { $unwind: "$products" },
+      {
+        $group: {
+          _id: "$_id", // Group by order ID to count each order only once
+          totalAmount: { $first: "$totalAmount" }, // Preserve totalAmount per order
+          totalProductsInOrder: { $sum: { $size: "$products" } }, // Count products in each order
+        },
+      },
       {
         $group: {
           _id: null,
           totalOrders: { $sum: 1 },
           totalAmountSpent: { $sum: "$totalAmount" },
-          totalProductsPurchased: { $sum: "$products.quantity" },
+          totalProductsPurchased: { $sum: "$totalProductsInOrder" },
         },
+      },
+      {
+        $project: { _id: 0 }, // Remove _id from final output
       },
     ]);
     return {
-      orders,
+      orderList: orders.result,
+      pagination: orders.pagination,
       monthlySummary:
         monthlySummary.length > 0
           ? monthlySummary[0]
