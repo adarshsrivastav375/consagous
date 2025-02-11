@@ -10,27 +10,21 @@ export const get = asyncHandler(async (req, res, next) => {
   sendResponse(httpStatus.OK, res, data, "Record fetched successfully");
 });
 
-export const getLimitedFields = asyncHandler(async (req, res, next) => {
-  const fields = req.params;
-  const data = await CartService.getLimitedCartFields(fields);
-  sendResponse(httpStatus.OK, res, data, "Record fetched successfully");
-});
-
 export const create = asyncHandler(async (req, res, next) => {
   const userId = req.user._id;
-  const { id: courseId } = req.params;
+  const { id: productId } = req.params;
   const {
     message,
     data: createdData,
     httpStatus: status,
-  } = await CartService.create(userId, courseId);
+  } = await CartService.create(userId, productId);
   sendResponse(status, res, createdData, message);
 });
 
 export const update = asyncHandler(async (req, res, next) => {
-  const { id: courseId } = req.params;
+  const { id: productId } = req.params;
   const userId = req.user._id;
-  const data = await CartService.removeItemFromCart(userId, courseId);
+  const data = await CartService.removeItemFromCart(userId, productId);
   sendResponse(
     httpStatus.OK,
     res,

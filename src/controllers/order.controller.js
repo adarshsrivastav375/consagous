@@ -9,18 +9,33 @@ export const get = asyncHandler(async (req, res, next) => {
   const data = await OrderService.get(id, filter);
   sendResponse(httpStatus.OK, res, data, "Record fetched successfully");
 });
-
-export const getLimitedFields = asyncHandler(async (req, res, next) => {
-  const fields = req.params;
-  const data = await OrderService.getLimitedOrderFields(fields);
+export const getUserOrders = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+  const filter = req.query;
+  const data = await OrderService.getUserOrders(user._id, filter);
   sendResponse(httpStatus.OK, res, data, "Record fetched successfully");
 });
 
+export const getBestSellingProducts = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+  const filter = req.query;
+  const data = await OrderService.getBestSellingProducts(filter);
+  sendResponse(httpStatus.OK, res, data, "Record fetched successfully");
+});
+
+export const getOrdersWithMonthlySummary = asyncHandler(
+  async (req, res, next) => {
+    const user = req.user;
+    const filter = req.query;
+    const data = await OrderService.orderswithMonthlySummary(user._id, filter);
+    sendResponse(httpStatus.OK, res, data, "Record fetched successfully");
+  }
+);
+
 export const create = asyncHandler(async (req, res, next) => {
-  const {cartId} = req.params;
-  const createdData = await OrderService.create(cartId);
-  req.order = createdData;
-  return next();
+  const user = req.user;
+  const data = await OrderService.create(user);
+  sendResponse(httpStatus.OK, res, data, "Record created successfully");
 });
 
 export const update = asyncHandler(async (req, res, next) => {

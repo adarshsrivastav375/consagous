@@ -11,12 +11,19 @@ const orderSchema = new BaseSchema({
     type: String,
     default: "",
   },
-  courses: {
+  products: {
     type: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
-        required: true,
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1, // Ensure at least 1 item is ordered
+        },
       },
     ],
     default: [],
@@ -24,6 +31,7 @@ const orderSchema = new BaseSchema({
   totalAmount: {
     type: Number,
     required: true,
+    min: 0,
   },
   status: {
     type: String,
@@ -32,13 +40,8 @@ const orderSchema = new BaseSchema({
   },
   paymentStatus: {
     type: String,
-    // enum: ["PENDING", "completed", "failed"],
-    default: "PENDING",
-  },
-  paymentDetails: {
-    type: Object,
-    required: true,
-    default: {},
+    enum: ["pending", "completed", "failed"],
+    default: "pending",
   },
 });
 

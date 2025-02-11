@@ -30,9 +30,6 @@ class AuthService {
       case "facebook":
         authUrl = `https://www.facebook.com/v12.0/dialog/oauth?client_id=${env.FACEBOOK_CLIENT_ID}&redirect_uri=${params.redirect_uri}&scope=email,public_profile`;
         break;
-      case "apple":
-        authUrl = `https://appleid.apple.com/auth/authorize?response_type=code id_token&client_id=${env.APPLE_CLIENT_ID}&redirect_uri=${params.redirect_uri}&scope=openid email name`;
-        break;
       default:
         throw new Error("Unsupported provider");
     }

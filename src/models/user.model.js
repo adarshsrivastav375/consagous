@@ -7,45 +7,6 @@ import uploadFile from "#utils/uploadFile";
 import jwt from "jsonwebtoken";
 import env from "#configs/env";
 
-export const addressSchema = new Schema({
-  line1: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  street: {
-    type: String,
-    trim: true,
-  },
-  city: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  state: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  postalCode: {
-    type: String,
-    required: true,
-    trim: true,
-    validate: {
-      validator: (value) => /^[1-9]\d{4,9}$/.test(value), // Matches a PIN code between 5 to 10 digits
-      message: "Please enter a valid PIN code.",
-    },
-  },
-  country: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  landmark: {
-    type: String,
-    trim: true,
-  },
-});
 
 const userSchema = new BaseSchema({
   // Personal Details
@@ -73,10 +34,6 @@ const userSchema = new BaseSchema({
     required: true,
     trim: true,
     lowerCase: true,
-  },
-  // Address Details
-  address: {
-    type: addressSchema,
   },
   // Role
   role: {

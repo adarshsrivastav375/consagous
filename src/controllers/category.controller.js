@@ -1,18 +1,20 @@
 import { sendResponse } from "#utils/response";
-import ProductService from "#services/product";
+import CategoryService from "#services/category";
 import httpStatus from "#utils/httpStatus";
 import asyncHandler from "#utils/asyncHandler";
 
 export const get = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const filter = req.query;
-  const data = await ProductService.get(id, filter);
+  const data = await CategoryService.get(id, filter);
   sendResponse(httpStatus.OK, res, data, "Record fetched successfully");
 });
 
 export const create = asyncHandler(async (req, res, next) => {
+   const userId = req.user._id;
   const data = req.body;
-  const createdData = await ProductService.create(data);
+  data.user = userId;
+  const createdData = await CategoryService.create(data);
   sendResponse(
     httpStatus.CREATED,
     res,
@@ -24,12 +26,12 @@ export const create = asyncHandler(async (req, res, next) => {
 export const update = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const data = req.body;
-  const updatedData = await ProductService.update(id, data);
+  const updatedData = await CategoryService.update(id, data);
   sendResponse(httpStatus.OK, res, updatedData, "Record updated successfully");
 });
 
 export const deleteData = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  await ProductService.deleteDoc(id);
-  sendResponse(httpStatus.NO_CONTENT, res, null, "Record deleted successfully");
+  await CategoryService.deleteDoc(id);
+  sendResponse(httpStatus.OK, res, null, "Record deleted successfully");
 });

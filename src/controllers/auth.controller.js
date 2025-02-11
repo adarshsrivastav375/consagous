@@ -28,9 +28,10 @@ export async function callback(req, res) {
       provider,
       code
     );
-
+    console.log("userInfo",userInfo)
     const { accessToken, refreshToken, userData } =
       await UserService.socialUserCreate(userInfo, provider);
+    console.log(accessToken, userData);
     let clientRedirectURL = `${env.FRONTEND_URL}?token=${accessToken}`;
     res.setHeader("Authorization", `Bearer ${accessToken}`);
     res.setHeader("X-Refresh-Token", refreshToken);
